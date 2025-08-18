@@ -1,0 +1,158 @@
+.payslip {
+  max-width: 800px;
+  margin: auto;
+  font-family: Arial, sans-serif;
+  border: 1px solid #ccc;
+  padding: 20px;
+    position: relative;
+  background-color: #f7f7f7; /* light background */
+  overflow: hidden;
+}
+
+/* Watermark effect */
+.payslip::before {
+  content: "WILLWARE TECHNOLOGIES";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 60px;
+  font-weight: bold;
+  color: #87CEEB;
+  opacity: 0.3;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  pointer-events: none; 
+  z-index: 0;
+  white-space: nowrap;
+  font-family: Arial, sans-serif;
+  letter-spacing: 3px;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.payslip::after {
+  content: "WILLWARE TECHNOLOGIES";
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  font-size: 45px;
+  font-weight: bold;
+  color: #ADD8E6;
+  opacity: 0.2;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  pointer-events: none; 
+  z-index: 0;
+  white-space: nowrap;
+  font-family: Arial, sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Make payslip content appear above watermark */
+.payslip > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* PDF-specific styles */
+@media print {
+  .payslip::before,
+  .payslip::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+.company-name {
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.company-address {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  input{
+    width:80px;
+    margin-left: 20px;
+  }
+ 
+}
+
+.details-table, .salary-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.details-table td,
+.salary-table td,
+.salary-table th {
+  border: 1px solid #000;
+  padding: 8px;
+}
+
+.salary-table th {
+  background: #f2f2f2;
+}
+
+.total-row td {
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  outline: none;
+  border-bottom: 1px solid transparent;
+}
+
+input[readonly] {
+  background-color: #f0f0f0;
+  color: #333;
+  font-weight: bold;
+  cursor: not-allowed;
+}
+
+/* Clean input styling for PDF */
+input:focus {
+  outline: none;
+  border-bottom: 1px solid #ccc;
+}
+
+.footer-section {
+  margin-top: 20px;
+  p{
+    display: flex;
+    align-items: center;
+   
+    input{
+      margin-left: 10px;
+      width: 350px;
+       color: rgb(0, 0, 0);
+        font-weight:900;
+    }
+  }
+}
+
+.footer-section p {
+  margin: 5px 0;
+}
+
+.note {
+  font-size: 12px;
+  margin-top: 10px;
+  color: #555;
+}

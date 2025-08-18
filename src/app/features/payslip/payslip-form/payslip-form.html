@@ -1,0 +1,119 @@
+<section class="bg-gray-400  mt-5 relative p-5">
+      <h1 class="text-center text-gray-800">( Fill The Form Manual or Select Employee Above ^ ) and Download the Payslip
+            !</h1>
+      <div class="absolute top-5 right-5 ">
+            <button type="button" (click)="onReset()" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded">Reset</button>
+            <button type="button" (click)="onDownload()" [disabled]="isDownloading"
+                  class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded ml-5 disabled:opacity-50 disabled:cursor-not-allowed">
+                  {{ isDownloading ? 'Downloading...' : 'Download' }}
+            </button>
+      </div>
+</section>
+<section id="payslip-form" class="bg-gray-100">
+  <form [formGroup]="payslipForm" (ngSubmit)="onSubmit()" class="payslip">
+
+    <h2 class="company-name">WILLWARE TECHNOLOGIES PVT LTD</h2>
+    <p class="company-address">No.105, 7th Block, Koramangala, Bangalore-560095</p>
+
+    <h3 class="title">
+      Payslip
+      <input type="text" formControlName="month" /> -
+      <input type="text" formControlName="year" />
+    </h3>
+
+    <!-- Employee Details -->
+    <table class="details-table">
+      <tr>
+        <td>Employee Name :</td>
+        <td><input type="text" formControlName="employeeName" /></td>
+        <td>Work Location :</td>
+        <td><input type="text" formControlName="workLocation" /></td>
+      </tr>
+      <tr>
+        <td>Employee ID :</td>
+        <td><input type="text" formControlName="employeeId" /></td>
+        <td>LOP Days :</td>
+        <td><input type="number" formControlName="lopDays" /></td>
+      </tr>
+      <tr>
+        <td>Designation :</td>
+        <td><input type="text" formControlName="designation" /></td>
+        <td>Worked Days / Paid Days :</td>
+        <td><input type="number" formControlName="workedDays" /></td>
+      </tr>
+      <tr>
+        <td>Department :</td>
+        <td><input type="text" formControlName="department" /></td>
+        <td>Bank A/c No :</td>
+        <td><input type="text" formControlName="bankAccount" /></td>
+      </tr>
+      <tr>
+        <td>Date of Joining :</td>
+        <td><input type="text" formControlName="joiningDate" /></td>
+        <td>UAN No :</td>
+        <td><input type="text" formControlName="uan" /></td>
+      </tr>
+      <tr>
+        <td>ESI Number :</td>
+        <td><input type="text" formControlName="esiNumber" /></td>
+        <td>PAN :</td>
+        <td><input type="text" formControlName="pan" /></td>
+      </tr>
+    </table>
+
+    <!-- Salary & Deductions -->
+    <table class="salary-table">
+      <thead>
+        <tr>
+          <th>Salary Payable</th>
+          <th>Amount</th>
+          <th>Deductions</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Basic Pay</td>
+          <td><input type="number" formControlName="basicPay" /></td>
+          <td>PF</td>
+          <td><input type="number" formControlName="pf" /></td>
+        </tr>
+        <tr>
+          <td>HRA</td>
+          <td><input type="number" formControlName="hra" /></td>
+          <td>ESI</td>
+          <td><input type="number" formControlName="esi" /></td>
+        </tr>
+        <tr>
+          <td>Others</td>
+          <td><input type="number" formControlName="others" /></td>
+          <td>TDS</td>
+          <td><input type="number" formControlName="tds" /></td>
+        </tr>
+        <tr>
+          <td>Incentive</td>
+          <td><input type="number" formControlName="incentive" /></td>
+          <td>Staff Advance</td>
+          <td><input type="number" formControlName="staffAdvance" /></td>
+        </tr>
+        <tr class="total-row">
+          <td><strong>Total Earnings</strong></td>
+          <td><input type="number" formControlName="totalEarnings" readonly /></td>
+          <td><strong>Total Deductions</strong></td>
+          <td><input type="number" formControlName="totalDeductions" readonly /></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Footer -->
+    <div class="footer-section">
+      <p><strong>Net Pay :</strong> <input type="number" formControlName="netPay" readonly /></p>
+      <p><strong>Amount in words :</strong> <input type="text" formControlName="amountWords" readonly /></p>
+      <p><strong>Mode of Payment :</strong> <input type="text" formControlName="paymentMode" /></p>
+      <br><br>
+      <p class="note">Note: "This payslip is computer generated; hence no signature is required."</p>
+    </div>
+
+    <button type="submit">Save</button>
+  </form>
+</section>

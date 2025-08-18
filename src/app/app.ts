@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { PayslipForm } from './features/payslip/payslip-form/payslip-form';
+import { EmployeeSearchComponent } from './features/payslip/employeelist';
+import { EmployeeListComponent } from './features/payslip/listview';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [ PayslipForm, EmployeeSearchComponent,EmployeeListComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
