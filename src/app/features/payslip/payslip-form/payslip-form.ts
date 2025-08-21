@@ -168,7 +168,7 @@ export class PayslipForm implements OnDestroy {
     container.style.left = '0';
     container.style.width = '800px';
     container.style.background = 'white';
-    container.style.padding = '20px';
+    // container.style.padding = '20px';
     container.style.fontFamily = 'Arial, sans-serif';
     container.style.zIndex = '10000';
     container.style.transform = 'scale(1)';
@@ -289,7 +289,7 @@ export class PayslipForm implements OnDestroy {
       span.style.lineHeight = computedStyle.lineHeight;
       span.style.fontSize = computedStyle.fontSize;
       span.style.fontFamily = computedStyle.fontFamily;
-      span.style.padding = computedStyle.padding;
+      // span.style.padding = computedStyle.padding;
       span.style.margin = computedStyle.margin;
       span.style.width = computedStyle.width;
       span.style.height = computedStyle.height;
@@ -312,6 +312,10 @@ export class PayslipForm implements OnDestroy {
     // Force CSS pseudo-elements to be visible in html2canvas
     const style = document.createElement('style');
     style.textContent = `
+      .payslip-pdf .title {
+        margin-right: 50px !important;
+        display: inline-block !important;
+       }
       .payslip-pdf::before {
         content: "WILLWARE TECHNOLOGIES" !important;
         position: absolute !important;
