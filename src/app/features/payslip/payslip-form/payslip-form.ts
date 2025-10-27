@@ -1,12 +1,15 @@
 import { Component, inject, effect, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { PayslipService } from '../payslip.service';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-payslip-form',
+  standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './payslip-form.html',
   styleUrl: './payslip-form.scss'
@@ -14,9 +17,14 @@ import html2canvas from 'html2canvas';
 export class PayslipForm implements OnDestroy {
   private readonly payslipService = inject(PayslipService);
   private readonly fb = inject(FormBuilder);
+  private readonly http = inject(HttpClient);
+  
+  // API Configuration - Update this with your domain
+  private readonly API_BASE_URL = 'https://attendance-three-lemon.vercel.app';
   
   payslipForm: FormGroup;
   isDownloading = false;
+  isSaving = false;
   private isUpdatingFromService = false;
 
   constructor() {
@@ -523,6 +531,75 @@ export class PayslipForm implements OnDestroy {
       footer.style.zIndex = '10';
       footer.style.position = 'relative';
     });
+  }
+
+  async onSave(): Promise<void> {
+    if (this.isSaving) return;
+    
+    this.isSaving = true;
+    
+    try {
+      const formData = this.payslipForm.value;
+      
+      // Get the employee ID from the form
+      const employeeId = formData.employeeId;
+      
+      if (!employeeId) {
+        alert('Employee ID is required to save payslip');
+        return;
+      }
+      
+      // Prepare the payload according to your API structure
+      const payload = {
+        month: formData.month?.toString().toLowerCase() || '',
+        year: formData.year?.toString() || '',
+        employeeName: formData.employeeName || '',
+        workLocation: formData.workLocation || '',
+        employeeId: employeeId,
+        lopDays: formData.lopDays || 0,
+        designation: formData.designation || '',
+        workedDays: formData.workedDays || 0,
+        department: formData.department || '',
+        bankAccount: formData.bankAccount || '',
+        joiningDate: formData.joiningDate || '',
+        uan: formData.uan || '',
+        esiNumber: formData.esiNumber || '',
+        pan: formData.pan || '',
+        basicPay: formData.basicPay || 0,
+        hra: formData.hra || 0,
+        others: formData.others || 0,
+        incentive: formData.incentive || 0,
+        pf: formData.pf || 0,
+        esi: formData.esi || 0,
+        tds: formData.tds || 0,
+        staffAdvance: formData.staffAdvance || 0,
+        totalEarnings: formData.totalEarnings || 0,
+        totalDeductions: formData.totalDeductions || 0,
+        netPay: formData.netPay || 0,
+        amountWords: formData.amountWords || '',
+        paymentMode: formData.paymentMode || ''
+      };
+      
+      console.log('Saving payslip data:', payload);
+      
+      // Make API call to create payslip
+      const apiUrl = `${this.API_BASE_URL}/createPaySlip/${employeeId}`;
+      console.log('API URL:', apiUrl);
+      
+      const response = await firstValueFrom(
+        this.http.post<any>(apiUrl, payload)
+      );
+      
+      console.log('Save payslip response:', response);
+      alert('Payslip data saved successfully!');
+      
+    } catch (error) {
+      console.error('Error saving payslip:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert('Error saving payslip: ' + errorMessage + '. Please try again.');
+    } finally {
+      this.isSaving = false;
+    }
   }
 
   onSubmit(): void {

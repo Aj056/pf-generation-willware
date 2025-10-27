@@ -3,8 +3,12 @@
             !</h1>
       <div class="absolute top-5 right-5 ">
             <button type="button" (click)="onReset()" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded">Reset</button>
+            <button type="button" (click)="onSave()" [disabled]="isSaving"
+                  class="bg-green-600 hover:bg-green-700 text-white p-2 rounded ml-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                  {{ isSaving ? 'Saving...' : 'Save' }}
+            </button>
             <button type="button" (click)="onDownload()" [disabled]="isDownloading"
-                  class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded ml-5 disabled:opacity-50 disabled:cursor-not-allowed">
+                  class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded ml-2 disabled:opacity-50 disabled:cursor-not-allowed">
                   {{ isDownloading ? 'Downloading...' : 'Download' }}
             </button>
       </div>
