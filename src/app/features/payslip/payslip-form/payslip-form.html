@@ -1,6 +1,5 @@
 <section class="bg-gray-400  mt-5 relative p-5">
-      <h1 class="text-center text-gray-800">( Fill The Form Manual or Select Employee Above ^ ) and Download the Payslip
-            !</h1>
+      <h1 class="text-center text-gray-800">( Fill The Form Manual or Select Employee Above ^ )</h1>
       <div class="absolute top-5 right-5 ">
             <button type="button" (click)="onReset()" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded">Reset</button>
             <button type="button" (click)="onSave()" [disabled]="isSaving"
@@ -21,8 +20,12 @@
 
     <h3 class="title">
       Payslip for
-      <input type="text" formControlName="month" /> -
-      <input type="text" formControlName="year" />
+      <select formControlName="month" class="month-dropdown">
+        <option *ngFor="let month of months" [value]="month">{{ month }}</option>
+      </select> -
+      <select formControlName="year" class="year-dropdown">
+        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+      </select>
     </h3>
 
     <!-- Employee Details -->
@@ -34,8 +37,8 @@
         <td><input type="text" formControlName="workLocation" /></td>
       </tr>
       <tr>
-        <td>Employee ID :</td>
-        <td><input type="text" formControlName="employeeId" /></td>
+        <td>WWT ID :</td>
+        <td><input type="text" formControlName="wwtId" /></td>
         <td>LOP Days :</td>
         <td><input type="number" formControlName="lopDays" /></td>
       </tr>
@@ -114,6 +117,7 @@
       <p><strong>Net Pay :</strong> <input type="number" formControlName="netPay" readonly /></p>
       <p><strong>Amount in words :</strong> <input type="text" formControlName="amountWords" readonly /></p>
       <p><strong>Mode of Payment :</strong> <input type="text" formControlName="paymentMode" /></p>
+      <p><strong>Additional Info :</strong> <input type="text" formControlName="additionalFiled" style="width: 100%;" /></p>
       <br>
       <p class="note">Note: "This payslip is computer generated; hence no signature is required."</p>
     </div>

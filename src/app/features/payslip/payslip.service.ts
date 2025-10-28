@@ -7,6 +7,7 @@ export interface PayslipData {
   employeeName: string;
   workLocation: string;
   employeeId: string;
+  wwtId: string; // Add wwtId field
   lopDays: number;
   designation: string;
   workedDays: number;
@@ -29,6 +30,7 @@ export interface PayslipData {
   netPay: number;
   amountWords: string;
   paymentMode: string;
+  additionalFiled: string; // Add additionalFiled field
 }
 
 @Injectable({ providedIn: 'root' })
@@ -55,7 +57,17 @@ export class PayslipService {
     const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
     const currentYear = currentDate.getFullYear().toString();
 
-    // Calculate default salary based on role/designation
+    // Use actual employee data if available, otherwise use calculated defaults
+    const actualBasicPay = employee.basicPay;
+    const actualHRA = employee.hra;
+    const actualOthers = employee.others;
+    const actualIncentive = employee.incentive;
+    const actualPF = employee.pf;
+    const actualESI = employee.esi;
+    const actualTDS = employee.tds;
+    const actualStaffAdvance = employee.staffAdvance;
+
+    // Calculate default salary based on role/designation (only if actual data not available)
     let defaultBasicPay = 30000; // Default basic pay
     let defaultHRA = 12000; // 40% of basic
     let defaultOthers = 3000; // Other allowances
@@ -80,9 +92,15 @@ export class PayslipService {
       defaultIncentive = 8000;
     }
 
-    // Calculate standard deductions
-    const totalEarnings = defaultBasicPay + defaultHRA + defaultOthers + defaultIncentive;
-    const defaultPF = Math.round(defaultBasicPay * 0.12); // 12% of basic
+    // Use actual values or defaults (properly handle 0 values)
+    const finalBasicPay = actualBasicPay !== null && actualBasicPay !== undefined ? actualBasicPay : defaultBasicPay;
+    const finalHRA = actualHRA !== null && actualHRA !== undefined ? actualHRA : defaultHRA;
+    const finalOthers = actualOthers !== null && actualOthers !== undefined ? actualOthers : defaultOthers;
+    const finalIncentive = actualIncentive !== null && actualIncentive !== undefined ? actualIncentive : defaultIncentive;
+
+    // Calculate standard deductions if not provided (properly handle 0 values)
+    const totalEarnings = finalBasicPay + finalHRA + finalOthers + finalIncentive;
+    const defaultPF = Math.round(finalBasicPay * 0.12); // 12% of basic
     const defaultESI = totalEarnings <= 21000 ? Math.round(totalEarnings * 0.0075) : 0; // 0.75% if eligible
     const defaultTDS = totalEarnings > 40000 ? Math.round(totalEarnings * 0.05) : 0; // 5% if applicable
 
@@ -95,6 +113,7 @@ export class PayslipService {
       employeeName: employee.employeeName,
       workLocation: employee.workLocation,
       employeeId: employee._id,
+      wwtId: employee.wwtId || employee._id, // Use wwtId if available, fallback to _id
       designation: employee.designation,
       department: employee.department,
       bankAccount: employee.bankAccount,
@@ -105,14 +124,15 @@ export class PayslipService {
       paymentMode: 'Bank Transfer',
       workedDays: defaultWorkedDays,
       lopDays: defaultLOPDays,
-      basicPay: defaultBasicPay,
-      hra: defaultHRA,
-      others: defaultOthers,
-      incentive: defaultIncentive,
-      pf: defaultPF,
-      esi: defaultESI,
-      tds: defaultTDS,
-      staffAdvance: 0
+      basicPay: finalBasicPay,
+      hra: finalHRA,
+      others: finalOthers,
+      incentive: finalIncentive,
+      pf: actualPF !== null && actualPF !== undefined ? actualPF : defaultPF,
+      esi: actualESI !== null && actualESI !== undefined ? actualESI : defaultESI,
+      tds: actualTDS !== null && actualTDS !== undefined ? actualTDS : defaultTDS,
+      staffAdvance: actualStaffAdvance !== null && actualStaffAdvance !== undefined ? actualStaffAdvance : 0,
+      additionalFiled: employee.additionalFiled || 'N/A'
     };
   }
 
@@ -213,6 +233,7 @@ export class PayslipService {
       employeeName: 'N/A',
       workLocation: 'N/A',
       employeeId: 'N/A',
+      wwtId: 'N/A', // New field
       lopDays: 0,
       designation: 'N/A',
       workedDays: 0,
@@ -234,7 +255,8 @@ export class PayslipService {
       totalDeductions: 0,
       netPay: 0,
       amountWords: 'Zero only',
-      paymentMode: 'Bank Transfer'
+      paymentMode: 'Bank Transfer',
+      additionalFiled: 'N/A'
     };
   }
 }

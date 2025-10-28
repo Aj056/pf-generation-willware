@@ -25,6 +25,17 @@ export interface Employee {
   readonly phone: string;
   readonly status: boolean;
   readonly __v: number;
+  // New salary and financial fields
+  readonly wwtId?: string;
+  readonly basicPay?: number;
+  readonly hra?: number;
+  readonly others?: number;
+  readonly incentive?: number;
+  readonly staffAdvance?: number;
+  readonly tds?: number;
+  readonly esi?: number;
+  readonly pf?: number;
+  readonly additionalFiled?: string;
 }
 
 export interface ApiResponse<T> {

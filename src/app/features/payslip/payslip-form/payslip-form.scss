@@ -70,11 +70,15 @@
   text-align: center;
   font-size: 20px;
   font-weight: bold;
+  color: #000;
+  margin-bottom: 5px;
 }
 
 .company-address {
   text-align: center;
   margin-bottom: 20px;
+  color: #000;
+  font-size: 14px;
 }
 
 .title {
@@ -82,17 +86,45 @@
   margin-bottom: 20px;
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 10px;
+  
   input{
     width:80px;
     margin-left: 20px;
   }
- 
+
+  .month-dropdown,
+  .year-dropdown {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 14px;
+    color: #333;
+    outline: none;
+    cursor: pointer;
+    
+    &:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    }
+  }
+  
+  .month-dropdown {
+    min-width: 120px;
+  }
+  
+  .year-dropdown {
+    min-width: 80px;
+  }
 }
 
 .details-table, .salary-table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
+  border: 2px solid #000; /* Stronger outer border */
 }
 
 .details-table td,
@@ -100,6 +132,8 @@
 .salary-table th {
   border: 1px solid #000;
   padding: 8px;
+  background-color: white; /* Ensure background is white */
+  color: #000; /* Ensure text is black */
 }
 
 .salary-table th {

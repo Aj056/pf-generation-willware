@@ -27,6 +27,14 @@ export class PayslipForm implements OnDestroy {
   isSaving = false;
   private isUpdatingFromService = false;
 
+  // Dropdown options
+  readonly months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  
+  readonly years = Array.from({ length: 11 }, (_, i) => (2020 + i).toString());
+
   constructor() {
     this.payslipForm = this.createForm();
     this.setupFormValueChanges();
@@ -45,6 +53,7 @@ export class PayslipForm implements OnDestroy {
       employeeName: [defaultData.employeeName],
       workLocation: [defaultData.workLocation],
       employeeId: [defaultData.employeeId],
+      wwtId: [defaultData.wwtId], // New field - will be displayed instead of employeeId
       lopDays: [defaultData.lopDays],
       designation: [defaultData.designation],
       workedDays: [defaultData.workedDays],
@@ -67,6 +76,7 @@ export class PayslipForm implements OnDestroy {
       netPay: [defaultData.netPay],
       amountWords: [defaultData.amountWords],
       paymentMode: [defaultData.paymentMode],
+      additionalFiled: [defaultData.additionalFiled]
     });
   }
 
@@ -166,8 +176,14 @@ export class PayslipForm implements OnDestroy {
     // Create a clone to modify for PDF
     const clonedElement = payslipElement.cloneNode(true) as HTMLElement;
     
+    // Get current form values to ensure accuracy
+    const formData = this.payslipForm.value;
+    console.log('Form data for PDF generation:', formData);
+    console.log('Selected month:', formData.month);
+    console.log('Selected year:', formData.year);
+    
     // Replace all inputs with spans but keep the exact styling
-    this.prepareElementForPDFPreserveLayout(clonedElement);
+    this.prepareElementForPDFPreserveLayout(clonedElement, formData);
     
     // Create a container for PDF generation
     const container = document.createElement('div');
@@ -315,12 +331,21 @@ export class PayslipForm implements OnDestroy {
     }
   }
 
-  private prepareElementForPDFPreserveLayout(element: HTMLElement): void {
+  private prepareElementForPDFPreserveLayout(element: HTMLElement, formData?: any): void {
     // Replace inputs with spans but preserve exact styling
     const inputs = element.querySelectorAll('input');
     inputs.forEach(input => {
       const span = document.createElement('span');
-      span.textContent = input.value || 'N/A';
+      
+      // Get the actual value from form data if available, otherwise from input element
+      let inputValue = input.value;
+      if (formData) {
+        const controlName = input.getAttribute('formControlName');
+        if (controlName && formData[controlName] !== undefined && formData[controlName] !== null) {
+          inputValue = formData[controlName].toString();
+        }
+      }
+      span.textContent = inputValue || 'N/A';
       
       // Copy all computed styles from input to span
       const computedStyle = window.getComputedStyle(input);
@@ -349,6 +374,45 @@ export class PayslipForm implements OnDestroy {
       }
     });
 
+    // Replace select dropdowns with spans but preserve exact styling
+    const selects = element.querySelectorAll('select');
+    selects.forEach(select => {
+      const span = document.createElement('span');
+      
+      // Get the actual selected value from form data if available, otherwise from select element
+      let selectedValue = select.value;
+      if (formData) {
+        const controlName = select.getAttribute('formControlName');
+        if (controlName && formData[controlName]) {
+          selectedValue = formData[controlName];
+        }
+      }
+      span.textContent = selectedValue || 'N/A';
+      
+      // Copy all computed styles from select to span
+      const computedStyle = window.getComputedStyle(select);
+      
+      // Ensure text visibility and proper styling (NO BORDER)
+      span.style.color = '#000';
+      span.style.backgroundColor = 'transparent';
+      span.style.border = 'none'; // Remove border as requested
+      span.style.outline = 'none';
+      span.style.boxShadow = 'none';
+      span.style.display = 'inline-block';
+      span.style.verticalAlign = 'baseline';
+      span.style.lineHeight = computedStyle.lineHeight;
+      span.style.fontSize = computedStyle.fontSize;
+      span.style.fontFamily = computedStyle.fontFamily;
+      span.style.fontWeight = 'bold'; // Make month/year bold
+      span.style.padding = '2px 4px'; // Minimal padding
+      span.style.margin = computedStyle.margin;
+      span.style.textAlign = 'center';
+      
+      if (select.parentNode) {
+        select.parentNode.replaceChild(span, select);
+      }
+    });
+
     // Remove any buttons
     const buttons = element.querySelectorAll('button');
     buttons.forEach(button => button.remove());
@@ -362,6 +426,22 @@ export class PayslipForm implements OnDestroy {
     style.textContent = `
       .payslip-pdf .title {
         margin-right: 50px !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 10px !important;
+        text-align: center !important;
+        font-weight: bold !important;
+        font-size: 16px !important;
+       }
+       
+       /* Ensure month and year spans are visible */
+       .payslip-pdf .title span {
+        color: #000 !important;
+        font-weight: bold !important;
+        padding: 2px 4px !important;
+        border: none !important;
+        background-color: transparent !important;
         display: inline-block !important;
        }
        
@@ -378,6 +458,29 @@ export class PayslipForm implements OnDestroy {
         width: 100% !important;
        }
        
+       /* Ensure table borders are visible in PDF */
+       .payslip-pdf .details-table,
+       .payslip-pdf .salary-table {
+        border-collapse: collapse !important;
+        width: 100% !important;
+        border: 2px solid #000 !important;
+       }
+       
+       .payslip-pdf .details-table td,
+       .payslip-pdf .salary-table td,
+       .payslip-pdf .salary-table th {
+        border: 1px solid #000 !important;
+        padding: 8px !important;
+        color: #000 !important;
+        background-color: transparent !important;
+       }
+       
+       .payslip-pdf .salary-table th {
+        background-color: #f2f2f2 !important;
+        font-weight: bold !important;
+        color: #000 !important;
+       }
+
        /* Ensure note text is visible */
        .payslip-pdf .note {
         display: block !important;
@@ -556,6 +659,7 @@ export class PayslipForm implements OnDestroy {
         employeeName: formData.employeeName || '',
         workLocation: formData.workLocation || '',
         employeeId: employeeId,
+        wwtId: formData.wwtId || employeeId, // New field - use wwtId if available
         lopDays: formData.lopDays || 0,
         designation: formData.designation || '',
         workedDays: formData.workedDays || 0,
@@ -577,7 +681,8 @@ export class PayslipForm implements OnDestroy {
         totalDeductions: formData.totalDeductions || 0,
         netPay: formData.netPay || 0,
         amountWords: formData.amountWords || '',
-        paymentMode: formData.paymentMode || ''
+        paymentMode: formData.paymentMode || '',
+        additionalFiled: formData.additionalFiled || 'N/A'
       };
       
       console.log('Saving payslip data:', payload);
